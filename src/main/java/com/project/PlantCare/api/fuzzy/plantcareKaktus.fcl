@@ -1,0 +1,99 @@
+FUNCTION_BLOCK plantcare_sansewiera
+
+VAR_INPUT
+	sunLvl : REAL;
+	waterLvl : REAL;
+	humidityLvl : REAL;
+	temperatureLvl : REAL;
+END_VAR
+
+VAR_OUTPUT
+	sunlight_importance : REAL;
+	water_importance : REAL;
+	humidity_importance : REAL;
+	temperature_importance : REAL;
+END_VAR
+
+
+FUZZIFY sunLvl
+    TERM more_more := (45, 1) (55, 0);
+    TERM more :=  (45, 0) (55, 1) (65, 1) (75, 0);
+	TERM good := (65, 0) (75, 1) (85, 1) (95, 0);
+	TERM less := (85, 0) (95, 1);
+END_FUZZIFY
+
+FUZZIFY waterLvl
+    TERM more := (10, 1) (20, 0);
+	TERM good := (10, 0) (20, 1) (25, 1) (35, 0);
+	TERM less := (25, 0) (35, 1) (45, 1) (55, 0);
+	TERM less_less := (45, 0) (55, 1);
+END_FUZZIFY
+
+FUZZIFY humidityLvl
+    TERM more := (5, 1) (15, 0);
+	TERM good := (5, 0) (15, 1) (25, 1) (35, 0);
+	TERM less := (25, 0) (35, 1);
+END_FUZZIFY
+
+FUZZIFY temperatureLvl
+    TERM more := (21, 1) (25, 0);
+	TERM good := (21, 0) (25, 1) (27, 1) (31, 0);
+	TERM less := (27, 0) (31, 1);
+END_FUZZIFY
+
+
+DEFUZZIFY sunlight_importance
+    TERM less := (-20, 0) (-15, 1) (-10, 0);
+  	TERM nothing := (-10, 0) (0, 1) (10, 0);
+  	TERM more := (10, 0) (15, 1) (20, 0);
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY water_importance
+    TERM less := (-20, 0) (-15, 1) (-10, 0);
+	TERM nothing := (-10, 0) (0, 1) (10, 0);
+	TERM more := (10, 0) (15, 1) (20, 0);
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+
+DEFUZZIFY humidity_importance
+    TERM less := (-20, 0) (-15, 1) (-10, 0);
+	TERM nothing := (-10, 0) (0, 1) (10, 0);
+	TERM more := (10, 0) (15, 1) (20, 0);
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY temperature_importance
+    TERM less := (-20, 0) (-15, 1) (-10, 0);
+	TERM nothing := (-10, 0) (0, 1) (10, 0);
+	TERM more := (10, 0) (15, 1) (20, 0);
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF sunLvl IS more THEN sunlight_importance IS more;
+    RULE 2 : IF sunLvl IS good THEN sunlight_importance IS nothing;
+    RULE 3 : IF sunLvl IS less THEN sunlight_importance IS less;
+    RULE 4 : IF waterLvl IS more THEN water_importance IS more;
+    RULE 5 : IF waterLvl IS good THEN water_importance IS nothing;
+    RULE 6 : IF waterLvl IS less THEN water_importance IS less;
+    RULE 7 : IF humidityLvl IS more THEN humidity_importance IS more;
+    RULE 8 : IF humidityLvl IS good THEN humidity_importance IS nothing;
+    RULE 9 : IF humidityLvl IS less THEN humidity_importance IS less;
+    RULE 10 : IF temperatureLvl IS more THEN temperature_importance IS more;
+    RULE 11 : IF temperatureLvl IS good THEN temperature_importance IS nothing;
+    RULE 12 : IF temperatureLvl IS less THEN temperature_importance IS less;
+    RULE 13 : IF sunLvl IS more_more THEN sunlight_importance IS more;
+    RULE 14 : IF sunLvl IS more_more THEN humidity_importance IS nothing;
+    RULE 15 : IF waterLvl IS less_less THEN water_importance IS less;
+    RULE 16 : IF waterLvl IS less_less THEN humidity_importance IS less;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

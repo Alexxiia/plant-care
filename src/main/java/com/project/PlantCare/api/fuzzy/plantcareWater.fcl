@@ -1,0 +1,100 @@
+FUNCTION_BLOCK plantcare_water
+
+VAR_INPUT
+    waterLvl : REAL;
+    waterLvlNeeded : REAL;
+END_VAR
+
+VAR_OUTPUT
+	water_importance : REAL;
+END_VAR
+
+
+FUZZIFY waterLvl
+    TERM bardzo_niski := (5, 1) (10, 0);
+    TERM niski := (5, 0) (10, 1) (20, 1) (25, 0);
+    TERM srednio_niski := (20, 0) (25, 1) (35, 1) (40, 0);
+    TERM sredni := (35, 0) (40, 1) (50, 1) (55, 0);
+    TERM srednio_wysoki := (50, 0) (55, 1) (65, 1) (70, 0);
+    TERM wysoki := (65, 0) (70, 1) (80, 1) (85, 0);
+    TERM bardzo_wysoki := (80, 0) (85, 1);
+END_FUZZIFY
+
+FUZZIFY waterLvlNeeded
+    TERM bardzo_niski := (5, 1) (10, 0);
+    TERM niski := (5, 0) (10, 1) (20, 1) (25, 0);
+    TERM srednio_niski := (20, 0) (25, 1) (35, 1) (40, 0);
+    TERM sredni := (35, 0) (40, 1) (50, 1) (55, 0);
+    TERM srednio_wysoki := (50, 0) (55, 1) (65, 1) (70, 0);
+    TERM wysoki := (65, 0) (70, 1) (80, 1) (85, 0);
+    TERM bardzo_wysoki := (80, 0) (85, 1);
+END_FUZZIFY
+
+DEFUZZIFY water_importance
+   	TERM less_less := (0, 0) (10, 1) (20, 0);
+    TERM less := (20, 0) (30, 1) (40, 0);
+	TERM nothing := (40, 0) (50, 1) (60, 0);
+	TERM more := (60, 0) (70, 1) (80, 0);
+	TERM more_more := (80, 0) (90, 1) (100, 0);
+    DEFAULT := 50;
+END_DEFUZZIFY
+
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is bardzo_niski THEN water_importance IS nothing;
+    RULE 2 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is niski THEN water_importance IS more;
+    RULE 3 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is srednio_niski THEN water_importance IS more;
+	RULE 4 : IF waterLvl IS bardzo_niski AND waterLvlNeeded IS sredni THEN water_importance IS more_more;
+	RULE 5 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is srednio_wysoki THEN water_importance IS more_more;
+	RULE 6 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is wysoki THEN water_importance IS more_more;
+	RULE 7 : IF waterLvl IS bardzo_niski AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more_more;
+    RULE 8 : IF waterLvl IS niski AND waterLvlNeeded is bardzo_niski THEN water_importance IS less;
+    RULE 9 : IF waterLvl IS niski AND waterLvlNeeded is niski THEN water_importance IS nothing;
+	RULE 10 : IF waterLvl IS niski AND waterLvlNeeded is srednio_niski THEN water_importance IS more;
+	RULE 11 : IF waterLvl IS niski AND waterLvlNeeded is sredni THEN water_importance IS more;
+	RULE 12 : IF waterLvl IS niski AND waterLvlNeeded is srednio_wysoki THEN water_importance IS more_more;
+	RULE 13 : IF waterLvl IS niski AND waterLvlNeeded is wysoki THEN water_importance IS more_more;
+	RULE 14 : IF waterLvl IS niski AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more_more;
+	RULE 15 : IF waterLvl IS srednio_niski AND waterLvlNeeded is bardzo_niski THEN water_importance IS less;
+    RULE 16 : IF waterLvl IS srednio_niski AND waterLvlNeeded is niski THEN water_importance IS less;
+	RULE 17 : IF waterLvl IS srednio_niski AND waterLvlNeeded is srednio_niski THEN water_importance IS nothing;
+	RULE 18 : IF waterLvl IS srednio_niski AND waterLvlNeeded is sredni THEN water_importance IS more;
+	RULE 19 : IF waterLvl IS srednio_niski AND waterLvlNeeded is srednio_wysoki THEN water_importance IS more;
+	RULE 20 : IF waterLvl IS srednio_niski AND waterLvlNeeded is wysoki THEN water_importance IS more_more;
+	RULE 21 : IF waterLvl IS srednio_niski AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more_more;
+	RULE 22 : IF waterLvl IS sredni AND waterLvlNeeded is bardzo_niski THEN water_importance IS less_less;
+    RULE 23 : IF waterLvl IS sredni AND waterLvlNeeded is niski THEN water_importance IS less;
+	RULE 24 : IF waterLvl IS sredni AND waterLvlNeeded is srednio_niski THEN water_importance IS less;
+	RULE 25 : IF waterLvl IS sredni AND waterLvlNeeded is sredni THEN water_importance IS nothing;
+	RULE 26 : IF waterLvl IS sredni AND waterLvlNeeded is srednio_wysoki THEN water_importance IS more;
+	RULE 27 : IF waterLvl IS sredni AND waterLvlNeeded is wysoki THEN water_importance IS more;
+	RULE 28 : IF waterLvl IS sredni AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more_more;
+	RULE 29 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is bardzo_niski THEN water_importance IS less_less;
+    RULE 30 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is niski THEN water_importance IS less_less;
+	RULE 31 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is srednio_niski THEN water_importance IS less;
+	RULE 32 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is sredni THEN water_importance IS less;
+	RULE 33 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is srednio_wysoki THEN water_importance IS nothing;
+	RULE 34 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is wysoki THEN water_importance IS more;
+	RULE 35 : IF waterLvl IS srednio_wysoki AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more;
+	RULE 36 : IF waterLvl IS wysoki AND waterLvlNeeded is bardzo_niski THEN water_importance IS less_less;
+    RULE 37 : IF waterLvl IS wysoki AND waterLvlNeeded is niski THEN water_importance IS less_less;
+	RULE 38 : IF waterLvl IS wysoki AND waterLvlNeeded is srednio_niski THEN water_importance IS less_less;
+	RULE 39 : IF waterLvl IS wysoki AND waterLvlNeeded is sredni THEN water_importance IS less;
+	RULE 40 : IF waterLvl IS wysoki AND waterLvlNeeded is srednio_wysoki THEN water_importance IS less;
+	RULE 41 : IF waterLvl IS wysoki AND waterLvlNeeded is wysoki THEN water_importance IS nothing;
+	RULE 42 : IF waterLvl IS wysoki AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS more;
+	RULE 43 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is bardzo_niski THEN water_importance IS less_less;
+    RULE 44 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is niski THEN water_importance IS less_less;
+	RULE 45 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is srednio_niski THEN water_importance IS less_less;
+	RULE 46 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is sredni THEN water_importance IS less_less;
+	RULE 47 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is srednio_wysoki THEN water_importance IS less;
+	RULE 48 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is wysoki THEN water_importance IS less;
+	RULE 49 : IF waterLvl IS bardzo_wysoki AND waterLvlNeeded is bardzo_wysoki THEN water_importance IS nothing;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

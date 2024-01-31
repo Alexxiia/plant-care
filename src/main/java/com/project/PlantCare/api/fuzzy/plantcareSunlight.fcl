@@ -1,0 +1,100 @@
+FUNCTION_BLOCK plantcare_sunlight
+
+VAR_INPUT
+    sunLvl : REAL;
+    sunLvlNeeded : REAL;
+END_VAR
+
+VAR_OUTPUT
+	sunlight_importance : REAL;
+END_VAR
+
+
+FUZZIFY sunLvl
+    TERM bardzo_niski := (5, 1) (10, 0);
+    TERM niski := (5, 0) (10, 1) (20, 1) (25, 0);
+    TERM srednio_niski := (20, 0) (25, 1) (35, 1) (40, 0);
+    TERM sredni := (35, 0) (40, 1) (50, 1) (55, 0);
+    TERM srednio_wysoki := (50, 0) (55, 1) (65, 1) (70, 0);
+    TERM wysoki := (65, 0) (70, 1) (80, 1) (85, 0);
+    TERM bardzo_wysoki := (80, 0) (85, 1);
+END_FUZZIFY
+
+FUZZIFY sunLvlNeeded
+    TERM bardzo_niski := (5, 1) (10, 0);
+    TERM niski := (5, 0) (10, 1) (20, 1) (25, 0);
+    TERM srednio_niski := (20, 0) (25, 1) (35, 1) (40, 0);
+    TERM sredni := (35, 0) (40, 1) (50, 1) (55, 0);
+    TERM srednio_wysoki := (50, 0) (55, 1) (65, 1) (70, 0);
+    TERM wysoki := (65, 0) (70, 1) (80, 1) (85, 0);
+    TERM bardzo_wysoki := (80, 0) (85, 1);
+END_FUZZIFY
+
+DEFUZZIFY sunlight_importance
+   	TERM less_less := (0, 0) (10, 1) (20, 0);
+    TERM less := (20, 0) (30, 1) (40, 0);
+	TERM nothing := (40, 0) (50, 1) (60, 0);
+	TERM more := (60, 0) (70, 1) (80, 0);
+	TERM more_more := (80, 0) (90, 1) (100, 0);
+    DEFAULT := 50;
+END_DEFUZZIFY
+
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS nothing;
+    RULE 2 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is niski THEN sunlight_importance IS more;
+    RULE 3 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS more;
+	RULE 4 : IF sunLvl IS bardzo_niski AND sunLvlNeeded IS sredni THEN sunlight_importance IS more_more;
+	RULE 5 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS more_more;
+	RULE 6 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is wysoki THEN sunlight_importance IS more_more;
+	RULE 7 : IF sunLvl IS bardzo_niski AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more_more;
+    RULE 8 : IF sunLvl IS niski AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less;
+    RULE 9 : IF sunLvl IS niski AND sunLvlNeeded is niski THEN sunlight_importance IS nothing;
+	RULE 10 : IF sunLvl IS niski AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS more;
+	RULE 11 : IF sunLvl IS niski AND sunLvlNeeded is sredni THEN sunlight_importance IS more;
+	RULE 12 : IF sunLvl IS niski AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS more_more;
+	RULE 13 : IF sunLvl IS niski AND sunLvlNeeded is wysoki THEN sunlight_importance IS more_more;
+	RULE 14 : IF sunLvl IS niski AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more_more;
+	RULE 15 : IF sunLvl IS srednio_niski AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less;
+    RULE 16 : IF sunLvl IS srednio_niski AND sunLvlNeeded is niski THEN sunlight_importance IS less;
+	RULE 17 : IF sunLvl IS srednio_niski AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS nothing;
+	RULE 18 : IF sunLvl IS srednio_niski AND sunLvlNeeded is sredni THEN sunlight_importance IS more;
+	RULE 19 : IF sunLvl IS srednio_niski AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS more;
+	RULE 20 : IF sunLvl IS srednio_niski AND sunLvlNeeded is wysoki THEN sunlight_importance IS more_more;
+	RULE 21 : IF sunLvl IS srednio_niski AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more_more;
+	RULE 22 : IF sunLvl IS sredni AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less_less;
+    RULE 23 : IF sunLvl IS sredni AND sunLvlNeeded is niski THEN sunlight_importance IS less;
+	RULE 24 : IF sunLvl IS sredni AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS less;
+	RULE 25 : IF sunLvl IS sredni AND sunLvlNeeded is sredni THEN sunlight_importance IS nothing;
+	RULE 26 : IF sunLvl IS sredni AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS more;
+	RULE 27 : IF sunLvl IS sredni AND sunLvlNeeded is wysoki THEN sunlight_importance IS more;
+	RULE 28 : IF sunLvl IS sredni AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more_more;
+	RULE 29 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less_less;
+    RULE 30 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is niski THEN sunlight_importance IS less_less;
+	RULE 31 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS less;
+	RULE 32 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is sredni THEN sunlight_importance IS less;
+	RULE 33 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS nothing;
+	RULE 34 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is wysoki THEN sunlight_importance IS more;
+	RULE 35 : IF sunLvl IS srednio_wysoki AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more;
+	RULE 36 : IF sunLvl IS wysoki AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less_less;
+    RULE 37 : IF sunLvl IS wysoki AND sunLvlNeeded is niski THEN sunlight_importance IS less_less;
+	RULE 38 : IF sunLvl IS wysoki AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS less_less;
+	RULE 39 : IF sunLvl IS wysoki AND sunLvlNeeded is sredni THEN sunlight_importance IS less;
+	RULE 40 : IF sunLvl IS wysoki AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS less;
+	RULE 41 : IF sunLvl IS wysoki AND sunLvlNeeded is wysoki THEN sunlight_importance IS nothing;
+	RULE 42 : IF sunLvl IS wysoki AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS more;
+	RULE 43 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is bardzo_niski THEN sunlight_importance IS less_less;
+    RULE 44 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is niski THEN sunlight_importance IS less_less;
+	RULE 45 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is srednio_niski THEN sunlight_importance IS less_less;
+	RULE 46 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is sredni THEN sunlight_importance IS less_less;
+	RULE 47 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is srednio_wysoki THEN sunlight_importance IS less;
+	RULE 48 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is wysoki THEN sunlight_importance IS less;
+	RULE 49 : IF sunLvl IS bardzo_wysoki AND sunLvlNeeded is bardzo_wysoki THEN sunlight_importance IS nothing;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
